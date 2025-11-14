@@ -16,13 +16,15 @@ import ro.andreialionte.magazinonline.repository.UserRepository;
 import ro.andreialionte.magazinonline.request.LoginRequest;
 import ro.andreialionte.magazinonline.request.RegisterRequest;
 
+import org.springframework.http.HttpStatus;
+
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -53,7 +55,7 @@ public class AuthController {
 
         boolean emailExists = authRepository.findByEmail(registerRequest.getEmail()).isPresent();
         if (emailExists) {
-            throw new RuntimeException("Email already registered");
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
         Auth auth = authMapper.fromRegisterRequest(registerRequest);
@@ -75,21 +77,21 @@ public class AuthController {
         boolean authNotFound = authOptional.isEmpty();
 
         if (authNotFound) {
-            throw new RuntimeException("Invalid credentials");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         Auth auth = authOptional.get();
         boolean passwordMatches = passwordEncoder.matches(loginRequest.getPassword(), auth.getPasswordHash());
 
         if (!passwordMatches) {
-            throw new RuntimeException("Invalid credentials");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
         Optional<User> userOptional = userRepository.findByAuth(auth);
         boolean userNotFound = userOptional.isEmpty();
 
         if (userNotFound) {
-            throw new RuntimeException("User not found");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
     UserDto responseDto = userMapper.toDto(userOptional.get());
@@ -98,7 +100,9 @@ public class AuthController {
     Algorithm algorithm = Algorithm.HMAC256(jwtSecret);
     String token = JWT.create()
         .withSubject(responseDto.getId().toString())
+        .withClaim("userId", responseDto.getId().toString())
         .withClaim("email", responseDto.getEmail())
+        .withClaim("fullName", responseDto.getFirstName() + " " + responseDto.getLastName())
         .withIssuedAt(Instant.now())
         .sign(algorithm);
 

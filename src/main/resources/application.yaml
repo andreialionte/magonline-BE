@@ -2,14 +2,14 @@ spring:
   application:
     name: magazinonline
   datasource:
-    url: jdbc:postgresql://localhost:5432/ecommerceDB
+    url: jdbc:postgresql://localhost:5433/ecommerceDB
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: create        # create / update / validate
-    database-platform: org.hibernate.dialect.PostgreSQLDialect   # <-- important
+    database-platform: org.hibernate.dialect.PostgreSQLDialect   # important
     show-sql: true
     properties:
       hibernate:

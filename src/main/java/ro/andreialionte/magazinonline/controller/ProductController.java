@@ -45,8 +45,8 @@ public Optional<Product> getProduct(@RequestParam UUID id) {
         return productService.updateProduct(product);
     }
 
-    @DeleteMapping("/deleteProduct")
-    public void deleteProduct(@RequestBody UUID id) {
+    @DeleteMapping("/deleteProduct/{id}")
+    public void deleteProduct(@PathVariable UUID id) {
         productService.deleteProduct(id);
     }
 }
