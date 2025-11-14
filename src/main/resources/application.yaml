@@ -1,0 +1,53 @@
+spring:
+  application:
+    name: magazinonline
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ecommerceDB
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create        # create / update / validate
+    database-platform: org.hibernate.dialect.PostgreSQLDialect   # <-- important
+    show-sql: true
+    properties:
+      hibernate:
+
+  cache:
+    type: redis
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 60000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: 10000ms
+
+
+
+
+
+server:
+  port: 5000
+
+springdoc:
+  paths-to-exclude:
+    - /docs/**  # because in /docs from scalar i see scalar-controller
+
+scalar:
+  url: http://localhost:5000/v3/api-docs    # from springdoc
+  path: /docs
+  theme: deepSpace
+  enabled: true
+  dark-mode: true
+
+jwt:
+  secret: KGKJGi$u(@$2094@()$@(f}(i@(R-h@up><@:"@{@}@p_@fu)@()f@(f@)"))))
+
+

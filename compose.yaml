@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: 'postgres:latest'
+    environment:
+      - 'POSTGRES_DB=ecommerceDB'
+      - 'POSTGRES_PASSWORD=postgres'
+      - 'POSTGRES_USER=postgres'
+    ports:
+      - '5432:5432'
+  redis:
+    image: 'ghcr.io/dragonflydb/dragonfly:latest'
+    ulimits:
+      memlock: -1
+    ports:
+      - '6379:6379'
+    command: ["--logtostderr", "--dir=/data", "--proactor_threads=2", "--cache_mode=true", "--maxmemory=4GiB" ]
